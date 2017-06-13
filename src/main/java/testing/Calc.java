@@ -1,4 +1,4 @@
-package Testing;
+package testing;
 
 public class Calc {
     public int getSum(int x, int y) {

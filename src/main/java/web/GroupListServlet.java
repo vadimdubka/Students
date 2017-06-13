@@ -1,7 +1,7 @@
 package web;
 
-import logic.Group;
-import logic.ManagementSystem2;
+import entity.Group;
+import service.ManagementSystem2;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,17 +13,16 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
-public class SimpleList extends HttpServlet {
+public class GroupListServlet extends HttpServlet {
 
-    public void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text / html;charset=UTF-8");
         PrintWriter pw = resp.getWriter();
-        pw.println("<B> Список групп</B>");
+        pw.println("<B>Список групп</B>");
         pw.println("<table border = 1>");
+
         try {
             List l = ManagementSystem2.getInstance().getGroups();
-//            System.out.println(l.size());
             for (Iterator it = l.iterator(); it.hasNext(); ) {
                 Group gr = (Group) it.next();
                 pw.println("<tr>");

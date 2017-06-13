@@ -1,4 +1,7 @@
-package logic;
+package service;
+
+import entity.Group;
+import entity.Student;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -16,9 +19,7 @@ public class ManagementSystem2 {
 
     private ManagementSystem2() {
     }
-
-    /*Раньше наш класс загружал драйвер и устанавливал соединение. Теперь мы видим, что соединения класс не делает — он только запрашивает ресурс по имени (отметим. что именно по тому имени, которое указано в файла web.xml и context.xml). А уже Tomcat берет на себя все необходимые действия — открывает соединение (несколько штук сразу), проверяет правильность и т.д.
-    * Возможно, что в нашем случае в таком подходе нет необходимости, но это удобно при большом количестве баз данных, коннектов и прочего.*/
+/** Раньше класс загружал драйвер и устанавливал соединение. Теперь соединения класс не делает — он только запрашивает ресурс по имени (именно по тому имени, которое указано в файле web.xml и context.xml). А уже Tomcat берет на себя все необходимые действия — открывает соединение (несколько штук сразу), проверяет правильность и т.д. Возможно, что в нашем случае в таком подходе нет необходимости, но это удобно при большом количестве баз данных, коннектов и прочего.*/
     public static synchronized ManagementSystem2 getInstance() {
         if (instance == null) {
             try {
@@ -36,7 +37,7 @@ public class ManagementSystem2 {
     }
 
     public List getGroups() throws SQLException {
-        List<logic.Group> groups = new ArrayList<logic.Group>();
+        List<Group> groups = new ArrayList<Group>();
 
         Statement stmt = null;
         ResultSet rs = null;

@@ -1,6 +1,6 @@
 package frame;
 
-import logic.Student;
+import entity.Student;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.DateFormat;

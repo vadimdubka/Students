@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
 
+<%--Форма для ввода данных о студенте — мы можем использовать одну форму для добавления и для редактирования.--%>
 <html>
 <head>
     <title>Список студентов</title>

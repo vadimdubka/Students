@@ -1,4 +1,4 @@
-package Testing;
+package testing;
 
 import org.junit.*;
 import org.junit.runner.Description;
@@ -91,14 +91,14 @@ public class TestCalc {
 Тогда надо переписать код следующим образом:
 @Test
     public void get001SumTest() {
-        Testing.Calc c = new Testing.Calc();
+        testing.Calc c = new testing.Calc();
         assertEquals(50, c.getSum(20, 30));
     }
 
     // Обратите внимание на название - оно теперь сделано таким для соблюдения порядка
     @Test
     public void get002SubtractionTest() {
-        Testing.Calc c = new Testing.Calc();
+        testing.Calc c = new testing.Calc();
         assertEquals(-10, c.getSubtraction(20, 30));
     }
 
@@ -118,7 +118,7 @@ public class TestCalc {
         JUnitCore core = new JUnitCore();
         core.addListener(new CalcListener());
         // Обратите внимание на этот вызов. Здесь использован объект Request, который позволяет запускать не один, а сразу много классов для тестирования. В документации внимательно посмотрите на его методы и Вы сможете разобраться.
-        core.run(Request.aClass(Testing.TestCalc.class).sortWith(forward()));
+        core.run(Request.aClass(testing.TestCalc.class).sortWith(forward()));
     }
  */
 

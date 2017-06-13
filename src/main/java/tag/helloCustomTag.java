@@ -1,11 +1,14 @@
-package web.tag;
+package tag;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
-public final class HelloTag extends TagSupport {
+/**
+ * Example of custom tags use
+ */
+public final class helloCustomTag extends TagSupport {
 
     private String name = null;
 

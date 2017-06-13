@@ -1,4 +1,4 @@
-package Testing;
+package testing;
 
 import org.junit.Test;
 import org.junit.runner.Description;

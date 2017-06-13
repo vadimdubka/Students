@@ -1,8 +1,8 @@
 package web;
 
-import logic.Group;
-import logic.ManagementSystem2;
-import logic.Student;
+import entity.Group;
+import service.ManagementSystem2;
+import entity.Student;
 import web.forms.MainFrameForm;
 import web.forms.StudentForm;
 
@@ -17,8 +17,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-/*JSP служит для того, чтобы показать данные которые ей передал сервлет (из MainFrameForm in this case). Профессионалы могут поспорить, но мне важно, чтобы вы поняли вот какой момент — сервлет собирает все данные по разным таблицам, по разным файла и т.д., кладет это все в некоторую структуру (из MainFraimForm in this case) и передает JSP, которая занимается тем, что из этой структуры (из MainFraimForm in this case) «вытаскивает» нужные данные и кладет их на соотвтествующее место на странице.*/
+/*JSP служит для того, чтобы показать данные которые ей передал сервлет (из MainFrameForm in this case). Профессионалы могут поспорить, но важно, чтобы вы поняли вот какой момент — сервлет собирает все данные по разным таблицам, по разным файла и т.д., кладет это все в некоторую структуру (из MainFrameForm in this case) и передает JSP, которая занимается тем, что из этой структуры (из MainFrameForm in this case) «вытаскивает» нужные данные и кладет их на соотвтествующее место на странице.*/
 
+/**
+ * Код для сервлета нашей главной страницы
+ */
 public class MainFrameServlet extends HttpServlet {
     // Переопределим стандартные методы
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

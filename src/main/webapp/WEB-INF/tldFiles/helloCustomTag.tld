@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" ?>
+<!--<?xml version="1.0" encoding="ISO-8859-1" ?>-->
 
+<!--Example of custom tags use-->
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
@@ -7,16 +9,14 @@
     <tlib-version>1.0</tlib-version>
     <short-name>Sample Tag Library</short-name>
 
-    <uri>/SimpleTagLibrary</uri> <!--?????????? ?????? ?? ???? ???????-->
-    <description>Example of tag for HelloWorld</description>
+    <uri>/SimpleTagLibrary</uri>
+    <description>Example of custom tag for HelloWorld</description>
 
-    <tag> <!--?????????? ??? (??? ???????)-->
+    <tag>
         <name>hello</name>
-        <tag-class>web.tag.HelloTag</tag-class> <!--?????????? ?????, ??????? ?????????? ??? ??????? ????-->
+        <tag-class>tag.helloCustomTag</tag-class>
         <body-content>empty</body-content>
-        <description>
-            Hello World Tag example
-        </description>
+        <description>Hello World Tag example</description>
         <attribute>
             <name>name</name>
             <required>false</required>

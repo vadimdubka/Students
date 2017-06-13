@@ -1,0 +1,73 @@
+<dataSource name="MySQL - students@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="2.6">
+    <schema id="1" name="students">
+      <visible>1</visible>
+    </schema>
+    <schema id="2" name="arrcompany" />
+    <schema id="3" name="demo_hotels" />
+    <schema id="4" name="information_schema" />
+    <schema id="5" name="mysql" />
+    <schema id="6" name="performance_schema" />
+    <schema id="7" name="powerbi" />
+    <schema id="8" name="sys" />
+    <table id="9" parent="1" name="groups" />
+    <table id="10" parent="1" name="students" />
+    <column id="11" parent="9" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="12" parent="9" name="groupName">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="13" parent="9" name="curator">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="14" parent="9" name="speciality">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <key id="15" parent="9" name="PRIMARY">
+      <columns>group_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="16" parent="10" name="student_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="17" parent="10" name="firstName">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="18" parent="10" name="surName">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="19" parent="10" name="patronymic">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="20" parent="10" name="dateOfBirth">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="21" parent="10" name="sex">
+      <data-type>char(1)|0</data-type>
+    </column>
+    <column id="22" parent="10" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="23" parent="10" name="educationYear">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <key id="24" parent="10" name="PRIMARY">
+      <columns>student_id</columns>
+      <primary>1</primary>
+    </key>
+  </database-model>
+</dataSource>

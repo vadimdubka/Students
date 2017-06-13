@@ -1,8 +1,8 @@
 package web;
 
-import logic.Group;
-import logic.ManagementSystem2;
-import logic.Student;
+import entity.Group;
+import service.ManagementSystem2;
+import entity.Student;
 import web.forms.MainFrameForm;
 
 import javax.servlet.ServletException;
@@ -17,6 +17,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * Код для сервлета, который будет обрабатывать редактирование данных студента
+ */
 public class StudentFrameServlet extends HttpServlet {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 

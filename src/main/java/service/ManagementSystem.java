@@ -1,15 +1,22 @@
-package logic;
+package service;
+
+import entity.Group;
+import entity.Student;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Класс для консольного приложения из папки frame. Самая первая версия.
+ */
 public class ManagementSystem {
 
     private static Connection con;
     private static ManagementSystem instance;
 
+    /** Класс загружает драйвер и устанавливает соединение. */
     private ManagementSystem() throws Exception {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -29,8 +36,8 @@ public class ManagementSystem {
         return instance;
     }
 
-    public List<logic.Group> getGroups() throws SQLException {
-        List<logic.Group> groups = new ArrayList<logic.Group>();
+    public List<Group> getGroups() throws SQLException {
+        List<Group> groups = new ArrayList<Group>();
 
         Statement stmt = null;
         ResultSet rs = null;

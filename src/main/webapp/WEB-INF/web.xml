@@ -7,18 +7,7 @@
 <!--version="3.1">-->
 
 <web-app>
-    <servlet>
-        <servlet-name>hello</servlet-name>
-        <servlet-class>web.HelloWorldServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>helloDB</servlet-name>
-        <servlet-class>web.HelloWorldServletDB</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>hello2</servlet-name>
-        <servlet-class>web.HelloWorldServlet2</servlet-class>
-    </servlet>
+
     <servlet>
         <servlet-name>MainFrameServlet</servlet-name>
         <servlet-class>web.MainFrameServlet</servlet-class>
@@ -28,22 +17,10 @@
         <servlet-class>web.StudentFrameServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>SimpleList</servlet-name>
-        <servlet-class>web.SimpleList</servlet-class>
+        <servlet-name>GroupListServlet</servlet-name>
+        <servlet-class>web.GroupListServlet</servlet-class>
     </servlet>
 
-    <servlet-mapping>
-        <servlet-name>hello</servlet-name>
-        <url-pattern>/helloStudent</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>helloDB</servlet-name>
-        <url-pattern>/helloStudentDB</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>hello2</servlet-name>
-        <url-pattern>/helloStudent2</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>MainFrameServlet</servlet-name>
         <url-pattern>/main</url-pattern>
@@ -53,8 +30,8 @@
         <url-pattern>/edit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>SimpleList</servlet-name>
-        <url-pattern>/simple</url-pattern>
+        <servlet-name>GroupListServlet</servlet-name>
+        <url-pattern>/groupListServlet</url-pattern>
     </servlet-mapping>
 
     <!--С другой шапкой не работает-->
@@ -63,22 +40,18 @@
             http://www.someurl.ru
         </taglib-uri>
         <taglib-location>
-            /WEB-INF/TldFiles/hello.tld
+            /WEB-INF/tldFiles/helloCustomTag.tld
         </taglib-location>
     </taglib>
 
-    <!--мы описали ресурс. У него есть описание — DB Connection. Далее мы указали имя, по которому мы будем его запрашивать через JNDI — jdbc/StudentsDS. Также мы описали тип/класс возвращаемого ресурса — javax.sql.DataSource. И в конце мы указали кто отвечает за авторизацию — будет ли приложение само подставлять логин и пароль или этим будет заниматься контейнер — в нашем случае этим будет заниматься Tomcat.
-    Отметим, что при таком описании контейнер берет на себя все заботы по поддержанию коннекта к базе. Причем не одного, а целого пула — несколько штук коннектов. Это удобно тем, что создание коннекта — дело сложное, долгое и ресурсоемкое. Если мы имеем некоторый запас свободных коннектов — это ускоряет работу.
-
-Для того, чтобы Tomcat знал какие параметры он должен подставить нам необходим еще один файл — context.xml.
-
-Корректно было бы при каждом запросе запрашивать коннект из пула, работать с ним и в конце честно закрывать/отдавать обратно в пул.
-    -->
+    <!--Ниже представлен ресурс. Отметим, что при таком описании контейнер берет на себя все заботы по поддержанию коннекта к базе. Причем не одного, а целого пула — несколько штук коннектов. Это удобно тем, что создание коннекта — дело сложное, долгое и ресурсоемкое. Если мы имеем некоторый запас свободных коннектов — это ускоряет работу.-->
+    <!--Для того, чтобы Tomcat знал какие параметры он должен подставить нам необходим еще один файл — context.xml.-->
+    <!--Корректно было бы при каждом запросе запрашивать коннект из пула, работать с ним и в конце честно закрывать/отдавать обратно в пул.-->
     <resource-ref>
-        <description>DB Connection</description>
-        <res-ref-name>jdbc/StudentsDS</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
+        <description>DB Connection</description> <!--Описание ресурса-->
+        <res-ref-name>jdbc/StudentsDS</res-ref-name> <!--имя, по которому мы будем запрашивать ресурс через JNDI-->
+        <res-type>javax.sql.DataSource</res-type> <!--описали тип/класс возвращаемого ресурса-->
+        <res-auth>Container</res-auth> <!--указали кто отвечает за авторизацию — будет ли приложение само подставлять логин и пароль или этим будет заниматься контейнер-->
     </resource-ref>
 
 </web-app>

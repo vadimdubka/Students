@@ -1,12 +1,14 @@
 package web.forms;
 
-import logic.Student;
+import entity.Student;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-/* можем использовать в качестве ${}*/
-public class StudentForm
-{
+
+/**
+ * содержит информацию о конкретном студенте, которую мы будем показывать на странице
+ */
+public class StudentForm {
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
     private int studentId;

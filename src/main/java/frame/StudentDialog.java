@@ -1,8 +1,8 @@
 package frame;
 
-import logic.Group;
-import logic.ManagementSystem;
-import logic.Student;
+import entity.Group;
+import service.ManagementSystem;
+import entity.Student;
 
 import javax.swing.*;
 import java.awt.*;

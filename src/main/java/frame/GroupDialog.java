@@ -1,6 +1,6 @@
 package frame;
 
-import logic.Group;
+import entity.Group;
 
 import javax.swing.*;
 import java.awt.*;
