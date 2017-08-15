@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+<!--Начнем рассматривать этот файл снизу вверх. -->
+
+
+    <!-- это «выбиратель» страниц — в данном случае мы воспользовались классом InternalResourceViewResolver. Принцип его работы следующий: Сначала подставляется часть из prefix, потом к ней подставляется имя View, которое нам передаст контроллер (мы чуть ниже это увидим) и в конце подставляется часть из suffix. Т.е. если в качестве имени контроллер передаст строку subject/subject, то итогом будет страница JSP /subject/subject.jsp, которой и будет передано управление.-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass">
+            <value>org.springframework.web.servlet.view.JstlView</value>
+        </property>
+        <property name="order" value="2"/>
+        <property name="prefix">
+            <value>/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+    <!--Далее идут три наших контроллера — для показа наших трех тсраниц.-->
+    <bean id="professionController" class="web.controller.ProfessionController">
+        <property name="professionFacade" ref="professionFacade2" />
+    </bean>
+
+    <bean id="subjectController" class="web.controller.SubjectController">
+        <property name="subjectFacade" ref="subjectFacade" />
+    </bean>
+
+    <bean id="applicantController" class="web.controller.ApplicantController">
+        <property name="applicantFacade" ref="applicantFacade" />
+    </bean>
+
+    <!--для определения имени контроллера, который будет обрабатывать апросы, мы выбрали SimpleUrlHandlerMapping. Думаю, что вы уже догадались, как происходит выбор контроллера — это обычное совпадение по маске. В маске можно использовать * для обобщения нескольких страниц.-->
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/profession.std">professionController</prop>
+                <prop key="/subject.std">subjectController</prop>
+                <prop key="/applicant.std">applicantController</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

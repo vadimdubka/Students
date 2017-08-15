@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean name="baseStudentDAO" class="dao.BaseStudentDAO" abstract="true">
+        <property name="template" ref="hibernateTemplate" />
+    </bean>
+
+    <bean name="profession2DAO" class="dao.Profession2DAOImpl" parent="baseStudentDAO">
+    </bean>
+
+    <bean name="subjectDAO" class="dao.SubjectDAOImpl" parent="baseStudentDAO">
+    </bean>
+
+    <bean name="applicantDAO" class="dao.ApplicantDAOImpl" parent="baseStudentDAO">
+    </bean>
+
+    <bean name="applicantResultDAO" class="dao.ApplicantResultDAOImpl" parent="baseStudentDAO">
+    </bean>
+
+    <bean name="professionFacade2" parent="abstractTransactionProxy">
+        <property name="target">
+            <bean class="facade.ProfessionFacade2">
+                <property name="profession2DAO" ref="profession2DAO" />
+                <property name="subjectDAO" ref="subjectDAO" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean name="subjectFacade" parent="abstractTransactionProxy">
+        <property name="target">
+            <bean class="facade.SubjectFacade">
+                <property name="subjectDAO" ref="subjectDAO" />
+                <property name="profession2DAO" ref="profession2DAO" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean name="applicantFacade" parent="abstractTransactionProxy">
+        <property name="target">
+            <bean class="facade.ApplicantFacade">
+                <property name="applicantDAO" ref="applicantDAO" />
+                <property name="profession2DAO" ref="profession2DAO" />
+                <property name="applicantResultFacade" ref="applicantResultFacade" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean name="applicantResultFacade" parent="abstractTransactionProxy">
+        <property name="target">
+            <bean class="facade.ApplicantResultFacade">
+                <property name="applicantResultDAO" ref="applicantResultDAO" />
+                <property name="applicantDAO" ref="applicantDAO" />
+                <property name="subjectDAO" ref="subjectDAO" />
+            </bean>
+        </property>
+    </bean>
+
+</beans>

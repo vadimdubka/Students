@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <!-- IoC-->
+    <!--Здесь все достаточно несложно — я описываю объект (bean) с определенным именем, по которому я смогу получить его из контекста Spring.
+У бина с именем professionFacade есть свойство dao. Это свойство, которое можно установить с помощью метода setDao). Но значение этого свойства берется как ссылка на другой объект — professionDAO_1. Бин с именем professionDAO_1 имеет тип Profession2DAOImpl. Этот тип реализует интерфейс Profession2DAO и следовательно прекрасно может быть подключен к полю dao у объекта класса ProfessionFacade2. Для того, чтобы подключить объект другого класса — а именно professionDAO_2 — нам надо будет просто поменять значение у свойства dao и перезапустить наше приложение. Никаких компиляций, никаких правок кода. Ничего такого делать не приходится — даже и не думайте об этом.-->
+    <bean name="professionFacade" class="facade.ProfessionFacade">
+        <property name="dao" ref="professionDAO_1"/>
+    </bean>
+
+    <bean name="professionDAO_1" class="dao.ProfessionDAOImpl">
+    </bean>
+
+    <bean name="professionDAO_2" class="dao.ProfessionDAOImpl2">
+    </bean>
+
+    <!-- AOP-->
+    <!--Первым я описал наш класс интресептора -students.dao.ProfessionInterceptor. Его код мы только что посмотрели.
+    Далее я ввел специальный класс - professionFacadeProxy. По сути он представляет из себя копию методов того бина, который мы указали в качестве target — а именно professionFacade. В двух словах: Spring «на лету» создает свой собственный класс, который унаследует все методы своего target, но к тому же при вызове какого-либо метода «протаскивает» этот вызов через все интерсепторы, которые зарегистрированы. В нашем случае он всего один, но ради эксперимента можно скопировать строку <value>professionInterceptor</value> дважды (трижды, …) и посмотреть на результат. Осталось привести пример вызова нашего нового бина — professionFacadeProxy.-->
+    <bean name="professionInterceptor" class="dao.ProfessionInterceptor">
+    </bean>
+
+    <bean name="professionFacadeProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="professionFacade"/>
+        <property name="interceptorNames">
+            <list>
+                <value>professionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--DB-->
+    <!--Здесь надо обратить внимание на следующий момент — конфигурация бина professionFacadeDB. Во-первых в нем мы видим атрибут parent, в котором находится наш важный бин-посредник abstractTransactionProxy.
+    И второй момент — мы инициализовали свойство dao для класса facade.ProfessionFacade22 сразу внутри описания.
+    Вот в принципе и все. Остальной код для запуска есть в архиве (пример находится в проекте Spring_03) и я советую вам быстрее скачивать его, запускать и исследовать новые возможности, о которых вы узнали. -->
+    <bean name="professionDAO" class="dao.ProfessionDAOImplSpringDB">
+        <property name="template" ref="hibernateTemplate" />
+    </bean>
+
+    <bean name="professionFacadeDB" parent="abstractTransactionProxy">
+        <property name="target">
+            <bean class="facade.ProfessionFacade">
+                <property name="dao" ref="professionDAO" />
+            </bean>
+        </property>
+    </bean>
+
+</beans>
+

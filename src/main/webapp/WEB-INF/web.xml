@@ -8,6 +8,25 @@
 
 <web-app>
 
+    <!--По умолчанию Spring пытается загрузить файл /WEB-INF/applicationContext.xml.
+Если необходимо переопределить файл конфигурации по умолчанию или указать сразу несколько файлов конфигурации, то в файле web.xml следует настроить параметр инициализации контекста сервлета contextConfigLocation.
+
+contextConfigLocation — этот параметр содержит список всех файлов для конфигурации Spring-->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:StudentDatabase2.xml,
+            classpath:StudentExample2.xml,
+            classpath:StudentController.xml
+        </param-value>
+    </context-param>
+
+    <!-- http://javacore.ru/topic/13-mvc-spring.htm Для загрузки файлов конфигурации Spring необходимо настроить загрузчик контекста в файле web.xml (дескриптор развертывания). Это достигается за счет регистрации слушателя изменений в контексте сервлета ContextLoaderListener.-->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+
     <servlet>
         <servlet-name>MainFrameServlet</servlet-name>
         <servlet-class>web.MainFrameServlet</servlet-class>
@@ -21,6 +40,33 @@
         <servlet-class>web.GroupListServlet</servlet-class>
     </servlet>
 
+    <!--Следует отметить, что в сервлет контейнерах реализующих версии сервлетов 2.3 или более раннии версии вместо ContextLoaderListener следует использовать ContextLoaderServlet, т.к. в старых реализациях (до версии 2.4) инициализация слушателей событий не происходила до инициализации сервлетов.
+В этом случае конфигурация будет выглядеть следующим образом.
+
+
+ContextLoaderServlet — это сервлет из пакета Spring, который берет на себя обязанности по загрузке контента Spring. если web-сервер поддерживает спецификацию Servlet 2.4 и выше, то документация советует использовать ContextLoaderListener. Но мы оставим наш пример в таком виде. Как видите мы его загружаем сразу и первым (см. load-on-startup)-->
+    <!--<servlet>
+        <servlet-name>context</servlet-name>
+        <servlet-class>
+            org.springframework.web.context.ContextLoaderServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>-->
+
+    <!--DispatcherServlet — в обязанности этого класса входит обработать все запросы. Это по сути и есть контроллер. Я бы назвал его предварительным. Как мы увидим чуть позже, он не единственный. Его мы тоже загружаем сразу. Отметьте, что он будет обрабатывать все запросы, которые оканчиваются на .std-->
+    <servlet>
+        <servlet-name>applicantServlet</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value/>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+
     <servlet-mapping>
         <servlet-name>MainFrameServlet</servlet-name>
         <url-pattern>/main</url-pattern>
@@ -33,6 +79,18 @@
         <servlet-name>GroupListServlet</servlet-name>
         <url-pattern>/groupListServlet</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>applicantServlet</servlet-name>
+        <url-pattern>*.std</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
 
     <!--С другой шапкой не работает-->
     <taglib>
@@ -51,7 +109,17 @@
         <description>DB Connection</description> <!--Описание ресурса-->
         <res-ref-name>jdbc/StudentsDS</res-ref-name> <!--имя, по которому мы будем запрашивать ресурс через JNDI-->
         <res-type>javax.sql.DataSource</res-type> <!--описали тип/класс возвращаемого ресурса-->
-        <res-auth>Container</res-auth> <!--указали кто отвечает за авторизацию — будет ли приложение само подставлять логин и пароль или этим будет заниматься контейнер-->
+        <res-auth>Container
+        </res-auth> <!--указали кто отвечает за авторизацию — будет ли приложение само подставлять логин и пароль или этим будет заниматься контейнер-->
+    </resource-ref>
+
+    <!--Также обратите внимание на определение ресурса класса DataSource (он в самом низу файла — ресурс studentDS). Мы уже пользовались таким определением в Часть 9 — Простое Web-приложение.
+    Если в двух словах: Tomcat предоставляет возможность воспользоваться реализацией интерфейсаjavax.sql.DataSource, которая является пулом коннектов к базе данных. параметры для коннекта находятся в файлеMETA_INF/context.xml-->
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>studentDS</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
     </resource-ref>
 
 </web-app>

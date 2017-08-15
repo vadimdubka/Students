@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+    <!DOCTYPE hibernate-configuration PUBLIC
+            "-//Hibernate/Hibernate Configuration DTD//EN"
+            "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+    <hibernate-configuration>
+
+        <session-factory>
+
+            <!-- Database connection settings -->
+            <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+            <property name="connection.url">jdbc:mysql://127.0.0.1:3306/db_applicant</property>
+            <property name="connection.username">root</property>
+            <property name="connection.password">int1984</property>
+
+            <!-- SQL dialect -->
+            <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+
+            <!-- JDBC connection pool (use the built-in). Данное свойство показывает, сколько коннектов к базе данных будет одновременно открыто. Как вы наверно уже слышали, это достаточно распространенный прием — иметь несколько соединений. Таким образом увеличивается скорость работы-->
+            <property name="connection.pool_size">1</property>
+
+            <!-- Enable Hibernate's automatic session context management. Свойство указывает, каким образом происходит управление.  -->
+            <property name="current_session_context_class">thread</property>
+
+            <!-- Disable the second-level cache. Кэширование позволяет существенно ускорить работу. Часто запрашиваемые данные можно хранить в памяти и не считывать их каждый раз. Такой способ имеет свои достоинства — скорость, но и свои недостатки. Если кто-то изменит данные в обход Hibernate, то он об этом может и не узнать. В нашем случае мы не используем кэш.-->
+            <property name="cache.provider_class">org.hibernate.cache.internal.NoCachingRegionFactory</property>
+
+            <!-- Echo all executed SQL to stdout -->
+            <property name="show_sql">true</property>
+
+            <!-- Drop and re-create the database schema on startup -->
+            <!--<property name="hbm2ddl.auto">create</property>-->
+
+            <!-- Mapping files. Если используем аннотации - теперь мы пишем не XML-файлы, а сами классы.-->
+            <mapping class="entity.Profession"/>
+            <mapping class="entity.Applicant"/>
+            <mapping class="entity.Subject"/>
+            <mapping class="entity.ApplicantResult"/>
+
+            <!-- Mapping files. Если используем аннотации
+             Он используется для перечисления всех классов, которые имеют связь с базой данных. Т.е. если вы хотите использовать какой-то класс для связи с какой-то таблицей, вы должны его здесь указать. В данном случае у нас он всего один.
+            <mapping resource="entity/profession.hbm.xml"/>
+            <mapping resource="entity/applicant.hbm.xml"/>
+            <mapping resource="entity/subject.hbm.xml"/>
+            <mapping resource="entity/applicantResult.hbm.xml"/> -->
+
+        </session-factory>
+
+    </hibernate-configuration>

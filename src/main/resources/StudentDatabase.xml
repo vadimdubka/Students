@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <!--этот бин используется для создания коннекта к базе данных. Если посмотреть в документацию, то класс DriverManagerDataSource является реализацией стандартного инерфейса javax.sql.DataSource. Реализация этого интерфейса создает пул коннектов к базе данных и может быть использована в системе JNDI какого-либо сервера-->
+    <bean name="studentDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/db_applicant"/>
+        <property name="username" value="root"/>
+        <property name="password" value="int1984"/>
+    </bean>
+
+    <!--этот класс используется для создания SessionFactory от Hibernate. Да-да, теперь мы обладатели класса, который умеет работать с Hibernate. Что не может не радовать. Причем обратите внимание, что мы тут описали аннотированный класс -students.entity.Profession а также указали параметры, которые используются для Hibernate — я имею в виду hibernate.dialect иhibernate.show_sql-->
+    <bean name="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="studentDS"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>entity.Profession</value>
+                <value>entity.Subject</value>
+                <value>entity.Applicant</value>
+                <value>entity.ApplicantResult</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <!--Вариант 1-->
+            <!--<value>
+                hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+                hibernate.show_sql=true
+            </value>-->
+            <!--Вариант 2-->
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--этот класс умеет создавать транзакции Hibernate-->
+    <bean name="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!--это наш специальный интерсептор, который умеет открывать транзакции и закрывать их. В нужное для нас время. Важно обратить внимание на параметры тэга transactionAttributes. Они указывают, какие методы (точнее, какие маски) будут окружаться транзакциями. Причем надо отметить, что есть транзакции только для чтения (readOnly) и есть транзакции, которые будут реагировать на появление исключений — в случае генерации исключения транзакция будет отменена. Как вы наверняка догадались будут отменены все действия с базой данных, произошедшие внутри метода.
+    Еще надо обратить внимание, что этот бин объявлен как абстрактный (смотрите атрибут abstract=»true»). Мы будем использовать этот бин как родителя для реальных наших фасадов. Увидим это чуть позже.-->
+    <bean name="abstractTransactionProxy"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+          abstract="true">
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="find*">PROPAGATION_REQUIRED, readOnly
+                </prop>
+                <prop key="get*">PROPAGATION_REQUIRED, readOnly
+                </prop>
+                <prop key="add*">PROPAGATION_REQUIRED,-Exception
+                </prop>
+                <prop key="update*">PROPAGATION_REQUIRED,-Exception
+                </prop>
+                <prop key="delete*">PROPAGATION_REQUIRED,-Exception
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- это класс, который умеет выполянть запросы к базе данных через Hibernate-->
+    <bean name="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!--Итак, давайте попробуем увидеть работу всех этих компонентов в комплексе.
+    Все начинается тогда, когда вы вызываете какой-то из методов нашего фасада — ProfessionFacade2. Причем я еще раз прошу обратить внимание, что на самом деле из контекста Spring мы получаем не наш класс, а его расширение, которое уже имеет в своем составе интерсептор, позволяющий работать с базой данных.
+    Расширенный класс своего рода посредник — он сделает необходимые действия до вызова нашего реального метода:
+    - откроет транзакцию,
+    - создаст объект Session для нашего объекта hibernateTemplate,
+    - после этого он вызовет уже наш метод,
+    - потом получит управление обратно
+    - и в зависимости от результата (было исключение или нет) подтвердит транзакцию или откатит.
+    Этот бин имеет свойство transactionManager. Т.е. когда надо открывать/закрывать транзакцию, бин не делает это сам — он использует менеджер транзакций. А тот в своею очередь использует SessionFactory от Hibernate (в нашем случае). И использует именно потому, что мы используем пакет Hibernate. Использовали бы что-то другое, тогда и менеджер транзакций был бы иной. Например для работы с J2EE-сервером можно использовать JTA транзакции сервера.
+    Теперь в коде нашего Profession2DAO мы используем свойство template для выполнения запросов к базе данных. Это свойство использует уже созданные бином abstractTransactionProxy транзакцию и сессию Hibernate.
+    Осталось только более внимательно посмотреть на бин sessionFactory. Думаю, что многие из свойств этого бина вам достаточно очевидны — мы используем dataSource, который определен — это параметры нашего коннекта. Также у нас есть список entity классов — в данном случае это entity.Profession. Ну и под конец у нас есть параметры для подключения к MySQL — hibernateProperties.-->
+
+</beans>

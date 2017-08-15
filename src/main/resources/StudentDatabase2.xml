@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <!--Основное различие с первой версией файла. Разница, что в бервой части мы бин studentDS описывали в самом файле, а во второй части - берем внешний конфигурационный файл web.xml, описывающий бин studentDS.
+
+    Как видите, теперь мы обращаемся к ресурсу по имени и этот ресурс предоставляет нам Web-контейнер Tomcat. Т.е. теперь параметры коннекта зарегистрированы у Tomcat и каждый, кто захочет, может им пользоваться. Опять разделение труда и облегчение работы. Что приятно.-->
+    <bean name="studentDS" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/studentDS"/>
+        <property name="resourceRef" value="true"/>
+    </bean>
+
+    <bean name="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="studentDS"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>entity.Profession</value>
+                <value>entity.Subject</value>
+                <value>entity.Applicant</value>
+                <value>entity.ApplicantResult</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean name="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean name="abstractTransactionProxy"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+          abstract="true">
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="find*">PROPAGATION_REQUIRED, readOnly
+                </prop>
+                <prop key="get*">PROPAGATION_REQUIRED, readOnly
+                </prop>
+                <prop key="add*">PROPAGATION_REQUIRED,-Exception
+                </prop>
+                <prop key="update*">PROPAGATION_REQUIRED,-Exception
+                </prop>
+                <prop key="delete*">PROPAGATION_REQUIRED,-Exception
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean name="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+</beans>
